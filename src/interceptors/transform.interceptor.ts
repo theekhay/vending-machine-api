@@ -6,7 +6,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
-import { GENERIC_RESPONSE_STATUS } from '../enums/response-code.enum';
+import { GENERIC_RESPONSE_STATUS } from '../enums/common.enum';
 import { ResponseModel } from '../models/response-model';
 
 @Injectable()

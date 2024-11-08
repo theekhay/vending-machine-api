@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, HttpStatus, Logger } from '@nestjs/common';
 import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
 import { QueryFailedError } from 'typeorm';
-import { GENERIC_RESPONSE_STATUS } from '../enums/response-code.enum';
+import { GENERIC_RESPONSE_STATUS } from '../enums/common.enum';
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {

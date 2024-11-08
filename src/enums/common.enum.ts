@@ -5,3 +5,7 @@ export enum GENERIC_RESPONSE_STATUS {
   NOT_FOUND = '04',
   ERROR = '95',
 }
+
+export enum QUEUE_EVENT {
+  PRODUCT_SOLD = 'PRODUCT_SOLD',
+}

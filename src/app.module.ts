@@ -8,6 +8,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { DatabaseModule } from './database/database.module';
 import { LoggerModule } from './logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
+import { QueueModule } from './modules/queue/queue.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -20,6 +21,9 @@ import * as Joi from 'joi';
         NODE_ENV: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRES_IN_SECONDS: Joi.number().required(),
+
+        //rabbitmq
+        RABBITMQ_URL: Joi.string().required(),
 
         //db
         POSTGRES_HOST: Joi.string().required(),
@@ -34,6 +38,7 @@ import * as Joi from 'joi';
     UserModule,
     AuthModule,
     TransactionModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

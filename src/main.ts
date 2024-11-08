@@ -14,11 +14,28 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './filters/rcp-exception.filter';
+import { Transport } from '@nestjs/microservices';
 config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.get('RABBITMQ_URL')],
+      queue: 'service.vendaw-business-new',
+      routingKey: 'service.vendaw-business-new',
+      exchange: 'hoshistech-exchange',
+      exchangeType: 'topic',
+      noAck: false,
+      queueOptions: {
+        durable: true,
+      },
+      enableControllerDiscovery: true,
+    },
+  });
 
   // Enable CORS with custom options
   app.enableCors();
