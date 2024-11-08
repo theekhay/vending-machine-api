@@ -1,4 +1,4 @@
-import { GENERIC_RESPONSE_STATUS } from '../enums/response-code.enum';
+import { GENERIC_RESPONSE_STATUS } from '../enums/common.enum';
 
 export class ResponseModel<T> {
   statusCode: string;

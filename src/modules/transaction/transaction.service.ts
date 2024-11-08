@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { UserRepository } from '../user/repositories/user.repository';
-import { ProductRepository } from '../product/repositories/product.repository';
 import { BuyDTO } from './dto/buy.dto';
 import { User } from '../../database/entities/user.entity';
 import { Product } from '../../database/entities/product.entity';
 import { Equal } from 'typeorm';
 import { DepositDTO } from './dto/deposit.dto';
+import { EventDispatcherService } from '../queue/dispatch.service';
 
 @Injectable()
 export class TransactionService {
@@ -13,7 +13,7 @@ export class TransactionService {
 
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly productRepository: ProductRepository,
+    private readonly eventDispatcherService: EventDispatcherService,
   ) {}
 
   async deposit(userId: string, depositDTO: DepositDTO) {
@@ -53,6 +53,7 @@ export class TransactionService {
     const { productId, quantity } = buyDTO;
 
     let response;
+    let product: Product;
     try {
       await this.userRepository.manager.transaction(async (manager) => {
         // Lock user row
@@ -66,7 +67,7 @@ export class TransactionService {
         }
 
         // Lock product row
-        const product = await manager.findOne(Product, {
+        product = await manager.findOne(Product, {
           where: { id: Equal(productId) },
           lock: { mode: 'pessimistic_write' },
         });
@@ -109,6 +110,11 @@ export class TransactionService {
           },
           change,
         };
+      });
+
+      this.eventDispatcherService.dispatchProductSoldEvent({
+        productId: product.id,
+        quantity: buyDTO.quantity,
       });
 
       return response;
